@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia de la Computación — Hitos Universales</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Unbounded:wght@200;400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #03050a;
+    --deep: #070d1a;
+    --cosmos: #0b1628;
+    --ink: #111d33;
+    --mist: #1a2d4a;
+
+    /* Física cuántica → espectro de color visible */
+    --gamma:    #ff006e;   /* rayos γ — ultravioleta extremo */
+    --xray:     #fb5607;   /* rayos X */
+    --uv:       #ffbe0b;   /* ultravioleta */
+    --visible:  #3a86ff;   /* luz visible */
+    --ir:       #8338ec;   /* infrarrojo */
+    --radio:    #06d6a0;   /* radio */
+
+    /* Eras */
+    --era-mecanica:  #ffbe0b;
+    --era-electronica: #fb5607;
+    --era-digital:   #3a86ff;
+    --era-personal:  #06d6a0;
+    --era-internet:  #8338ec;
+    --era-ia:        #ff006e;
+
+    --text-primary: #f0f6ff;
+    --text-secondary: #c4d8f0;
+    --text-dim: #8fb0d0;
+
+    --glow-blue: 0 0 20px rgba(58,134,255,0.4), 0 0 60px rgba(58,134,255,0.1);
+    --glow-pink: 0 0 20px rgba(255,0,110,0.4), 0 0 60px rgba(255,0,110,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--text-primary);
+    font-family: 'Crimson Pro', Georgia, serif;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ═══════════════ CANVAS DE FONDO ═══════════════ */
+  #starfield {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ═══════════════ ESTRUCTURA ═══════════════ */
+  .universe {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem 8rem;
+  }
+
+  /* ═══════════════ HEADER ═══════════════ */
+  header {
+    text-align: center;
+    padding: 7rem 1rem 4rem;
+    position: relative;
+  }
+
+  .header-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    color: var(--era-ia);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+  }
+
+  h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg,
+      var(--era-mecanica) 0%,
+      var(--era-electronica) 20%,
+      var(--era-digital) 40%,
+      var(--era-personal) 60%,
+      var(--era-internet) 80%,
+      var(--era-ia) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.2rem;
+    animation: shimmer 6s linear infinite;
+    background-size: 200% auto;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .header-sub {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    max-width: 560px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  /* ═══════════════ ESPECTRO FÍSICA ═══════════════ */
+  .spectrum-bar {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg,
+      var(--gamma), var(--xray), var(--uv),
+      var(--visible), var(--ir), var(--radio));
+    margin: 0 auto 1rem;
+    max-width: 700px;
+    box-shadow: 0 0 30px rgba(58,134,255,0.3);
+    position: relative;
+  }
+
+  .spectrum-labels {
+    display: flex;
+    justify-content: space-between;
+    max-width: 700px;
+    margin: 0 auto 4rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* ═══════════════ LEYENDA DE ERAS ═══════════════ */
+  .eras-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 5rem;
+  }
+
+  .era-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0.9rem;
+    border-radius: 2px;
+    text-transform: uppercase;
+    border: 1px solid;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+  .era-badge:hover { opacity: 1; }
+  .era-badge.mecanica   { color: var(--era-mecanica);  border-color: var(--era-mecanica);  background: rgba(255,190,11,0.05); }
+  .era-badge.electronica{ color: var(--era-electronica);border-color: var(--era-electronica);background: rgba(251,86,7,0.05); }
+  .era-badge.digital    { color: var(--era-digital);   border-color: var(--era-digital);   background: rgba(58,134,255,0.05); }
+  .era-badge.personal   { color: var(--era-personal);  border-color: var(--era-personal);  background: rgba(6,214,160,0.05); }
+  .era-badge.internet   { color: var(--era-internet);  border-color: var(--era-internet);  background: rgba(131,56,236,0.05); }
+  .era-badge.ia         { color: var(--era-ia);        border-color: var(--era-ia);        background: rgba(255,0,110,0.05); }
+
+  /* ═══════════════ LÍNEA DE TIEMPO ═══════════════ */
+  .timeline {
+    position: relative;
+    padding-left: 0;
+  }
+
+  /* Línea central vertical */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      var(--era-mecanica) 10%,
+      var(--era-electronica) 28%,
+      var(--era-digital) 48%,
+      var(--era-personal) 65%,
+      var(--era-internet) 80%,
+      var(--era-ia) 95%,
+      transparent 100%);
+    opacity: 0.4;
+  }
+
+  /* ═══════════════ SEPARADOR DE ERA ═══════════════ */
+  .era-divider {
+    text-align: center;
+    position: relative;
+    margin: 4rem 0 2rem;
+    z-index: 2;
+  }
+
+  .era-divider-inner {
+    display: inline-block;
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.5rem;
+    border-radius: 2px;
+    position: relative;
+  }
+  .era-divider-inner::before,
+  .era-divider-inner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 120px;
+    height: 1px;
+    opacity: 0.3;
+  }
+  .era-divider-inner::before { right: 100%; transform: translateY(-50%); }
+  .era-divider-inner::after  { left:  100%; transform: translateY(-50%); }
+
+  .era-divider.mecanica    .era-divider-inner { color: var(--era-mecanica);   background: rgba(255,190,11,0.07); }
+  .era-divider.mecanica    .era-divider-inner::before,
+  .era-divider.mecanica    .era-divider-inner::after { background: var(--era-mecanica); }
+  .era-divider.electronica .era-divider-inner { color: var(--era-electronica); background: rgba(251,86,7,0.07); }
+  .era-divider.electronica .era-divider-inner::before,
+  .era-divider.electronica .era-divider-inner::after { background: var(--era-electronica); }
+  .era-divider.digital     .era-divider-inner { color: var(--era-digital);    background: rgba(58,134,255,0.07); }
+  .era-divider.digital     .era-divider-inner::before,
+  .era-divider.digital     .era-divider-inner::after { background: var(--era-digital); }
+  .era-divider.personal    .era-divider-inner { color: var(--era-personal);   background: rgba(6,214,160,0.07); }
+  .era-divider.personal    .era-divider-inner::before,
+  .era-divider.personal    .era-divider-inner::after { background: var(--era-personal); }
+  .era-divider.internet    .era-divider-inner { color: var(--era-internet);   background: rgba(131,56,236,0.07); }
+  .era-divider.internet    .era-divider-inner::before,
+  .era-divider.internet    .era-divider-inner::after { background: var(--era-internet); }
+  .era-divider.ia          .era-divider-inner { color: var(--era-ia);         background: rgba(255,0,110,0.07); }
+  .era-divider.ia          .era-divider-inner::before,
+  .era-divider.ia          .era-divider-inner::after { background: var(--era-ia); }
+
+  /* ═══════════════ NODO DE EVENTO ═══════════════ */
+  .event {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 0;
+    margin-bottom: 3rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .event.visible { opacity: 1; transform: translateY(0); }
+
+  /* Alternancia izq/der */
+  .event.left  .event-content { grid-column: 1; text-align: right; padding-right: 2.5rem; }
+  .event.left  .event-node    { grid-column: 2; }
+  .event.left  .event-empty   { grid-column: 3; }
+
+  .event.right .event-empty   { grid-column: 1; }
+  .event.right .event-node    { grid-column: 2; }
+  .event.right .event-content { grid-column: 3; text-align: left; padding-left: 2.5rem; }
+
+  /* Nodo central */
+  .event-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.5rem;
+    z-index: 2;
+  }
+
+  .node-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: var(--void);
+    position: relative;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .node-dot::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+  }
+
+  .event:hover .node-dot { transform: scale(1.6); }
+
+  /* Colores por era */
+  .event.mecanica    .node-dot { border-color: var(--era-mecanica);   box-shadow: 0 0 12px rgba(255,190,11,0.5); }
+  .event.mecanica    .node-dot::after { background: var(--era-mecanica); }
+  .event.electronica .node-dot { border-color: var(--era-electronica); box-shadow: 0 0 12px rgba(251,86,7,0.5); }
+  .event.electronica .node-dot::after { background: var(--era-electronica); }
+  .event.digital     .node-dot { border-color: var(--era-digital);    box-shadow: 0 0 12px rgba(58,134,255,0.5); }
+  .event.digital     .node-dot::after { background: var(--era-digital); }
+  .event.personal    .node-dot { border-color: var(--era-personal);   box-shadow: 0 0 12px rgba(6,214,160,0.5); }
+  .event.personal    .node-dot::after { background: var(--era-personal); }
+  .event.internet    .node-dot { border-color: var(--era-internet);   box-shadow: 0 0 12px rgba(131,56,236,0.5); }
+  .event.internet    .node-dot::after { background: var(--era-internet); }
+  .event.ia          .node-dot { border-color: var(--era-ia);         box-shadow: 0 0 12px rgba(255,0,110,0.5); }
+  .event.ia          .node-dot::after { background: var(--era-ia); }
+
+  /* Línea vertical del nodo */
+  .node-line {
+    width: 1px;
+    flex: 1;
+    min-height: 20px;
+    opacity: 0.15;
+  }
+  .event.mecanica    .node-line { background: var(--era-mecanica); }
+  .event.electronica .node-line { background: var(--era-electronica); }
+  .event.digital     .node-line { background: var(--era-digital); }
+  .event.personal    .node-line { background: var(--era-personal); }
+  .event.internet    .node-line { background: var(--era-internet); }
+  .event.ia          .node-line { background: var(--era-ia); }
+
+  /* ═══════════════ CONTENIDO DEL EVENTO ═══════════════ */
+  .event-content {
+    padding-top: 0;
+    cursor: default;
+  }
+
+  .event-year {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--text-primary);
+    opacity: 0.7;
+    margin-bottom: 0.35rem;
+  }
+
+  .event-title {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .event.mecanica    .event-title { color: var(--era-mecanica); }
+  .event.electronica .event-title { color: var(--era-electronica); }
+  .event.digital     .event-title { color: var(--era-digital); }
+  .event.personal    .event-title { color: var(--era-personal); }
+  .event.internet    .event-title { color: var(--era-internet); }
+  .event.ia          .event-title { color: var(--era-ia); }
+
+  .event-desc {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Ficha física */
+  .physics-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.75rem;
+    border-radius: 2px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+  }
+
+  .physics-tag .icon { font-size: 0.75rem; }
+
+  /* Relevancia — barras de impacto */
+  .impact-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.65rem;
+  }
+  .event.left .impact-bar { justify-content: flex-end; }
+  .impact-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .impact-dots {
+    display: flex;
+    gap: 3px;
+  }
+  .impact-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 1px;
+    background: rgba(255,255,255,0.2);
+    opacity: 1;
+  }
+  .impact-dot.active { opacity: 1; }
+  .event.mecanica    .impact-dot.active { background: var(--era-mecanica); }
+  .event.electronica .impact-dot.active { background: var(--era-electronica); }
+  .event.digital     .impact-dot.active { background: var(--era-digital); }
+  .event.personal    .impact-dot.active { background: var(--era-personal); }
+  .event.internet    .impact-dot.active { background: var(--era-internet); }
+  .event.ia          .impact-dot.active { background: var(--era-ia); }
+
+  /* ═══════════════ GRÁFICA DE TRANSISTORES ═══════════════ */
+  .moore-section {
+    margin: 6rem 0;
+    padding: 3rem;
+    border: 1px solid rgba(58,134,255,0.15);
+    border-radius: 4px;
+    background: rgba(58,134,255,0.02);
+    position: relative;
+  }
+
+  .moore-section::before {
+    content: 'LEY DE MOORE — ESCALA LOGARÍTMICA';
+    position: absolute;
+    top: -0.7rem;
+    left: 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--era-digital);
+    background: var(--void);
+    padding: 0 0.75rem;
+  }
+
+  .moore-chart { width: 100%; overflow-x: auto; }
+  svg.moore { width: 100%; height: 280px; }
+
+  /* ═══════════════ FOOTER FÍSICA ═══════════════ */
+  .physics-panel {
+    margin-top: 6rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .physics-card {
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 1.5rem;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.015);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .physics-card:hover {
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .physics-card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .physics-card-title {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--text-primary);
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+  }
+
+  .physics-card-desc {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  .physics-card-formula {
+    margin-top: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--era-digital);
+    opacity: 1;
+    letter-spacing: 0.05em;
+  }
+
+  /* ═══════════════ FOOTER ═══════════════ */
+  footer {
+    text-align: center;
+    margin-top: 8rem;
+    padding: 3rem 1rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    line-height: 2.2;
+  }
+
+  /* ═══════════════ RESPONSIVE ═══════════════ */
+  @media (max-width: 700px) {
+    .timeline::before { left: 20px; }
+    .event { grid-template-columns: 40px 1fr; }
+    .event.left  .event-content,
+    .event.right .event-content { grid-column: 2; text-align: left; padding-left: 1.2rem; padding-right: 0; }
+    .event.left  .event-node,
+    .event.right .event-node    { grid-column: 1; }
+    .event.left  .event-empty,
+    .event.right .event-empty   { display: none; }
+    .event.left .impact-bar { justify-content: flex-start; }
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.8} }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="universe">
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <p class="header-label">De la Máquina Analítica al Modelo de Lenguaje</p>
+    <h1>Historia de la<br>Computación</h1>
+    <p class="header-sub">Desde los principios cuánticos del electrón hasta la inteligencia artificial — una travesía por los hitos que transformaron la física en pensamiento digital.</p>
+
+    <div class="spectrum-bar"></div>
+    <div class="spectrum-labels">
+      <span>~1820</span>
+      <span>1936</span>
+      <span>1947</span>
+      <span>1971</span>
+      <span>1991</span>
+      <span>2024</span>
+    </div>
+  </header>
+
+  <!-- ══ LEYENDA ══ -->
+  <div class="eras-legend">
+    <span class="era-badge mecanica">Era Mecánica</span>
+    <span class="era-badge electronica">Era Electrónica</span>
+    <span class="era-badge digital">Era Digital</span>
+    <span class="era-badge personal">Era Personal</span>
+    <span class="era-badge internet">Era Internet</span>
+    <span class="era-badge ia">Era IA</span>
+  </div>
+
+  <p class="scroll-hint">↓ desplaza para explorar ↓</p>
+
+  <!-- ══════════════════════════════════════
+       LÍNEA DE TIEMPO
+  ══════════════════════════════════════ -->
+  <div class="timeline">
+
+    <!-- ─── ERA MECÁNICA ─── -->
+    <div class="era-divider mecanica"><div class="era-divider-inner">Era Mecánica · 1820 – 1939</div></div>
+
+    <div class="event left mecanica">
+      <div class="event-content">
+        <div class="event-year">1822 — 1837</div>
+        <div class="event-title">Máquina Diferencial & Analítica — Charles Babbage</div>
+        <div class="event-desc">Babbage concibió la primera computadora mecánica programable. La Máquina Analítica incluía una "tienda" (memoria), un "molino" (CPU) y tarjetas perforadas de Jacquard. Ada Lovelace escribió el primer algoritmo de la historia para este dispositivo.</div>
+        <div class="physics-tag"><span class="icon">⚙️</span> Mecánica clásica — termodinámica del siglo XIX</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-empty"></div>
+    </div>
+
+    <div class="event right mecanica">
+      <div class="event-empty"></div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-content">
+        <div class="event-year">1854</div>
+        <div class="event-title">Álgebra de Boole — George Boole</div>
+        <div class="event-desc">Boole redujo la lógica a operaciones algebraicas binarias (AND, OR, NOT). Este sistema matemático se convertiría en el fundamento físico de todos los circuitos digitales modernos, donde la corriente eléctrica representa 1 ó 0.</div>
+        <div class="physics-tag"><span class="icon">🔢</span> Matemática — base del álgebra de conmutación</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="event left mecanica">
+      <div class="event-content">
+        <div class="event-year">1936</div>
+        <div class="event-title">Máquina de Turing — Alan Turing</div>
+        <div class="event-desc">Turing definió matemáticamente el concepto de computación mediante un modelo abstracto: una cinta infinita con estados finitos. Demostró el Problema de la Detención, estableciendo los límites fundamentales de la computabilidad antes de construir un solo circuito electrónico.</div>
+        <div class="physics-tag"><span class="icon">🧮</span> Teoría de la información — entropía computacional</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-empty"></div>
+    </div>
+
+    <!-- ─── ERA ELECTRÓNICA ─── -->
+    <div class="era-divider electronica"><div class="era-divider-inner">Era Electrónica · 1939 – 1970</div></div>
+
+    <div class="event right electronica">
+      <div class="event-empty"></div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-content">
+        <div class="event-year">1945</div>
+        <div class="event-title">ENIAC — Primera computadora electrónica de propósito general</div>
+        <div class="event-desc">Con 17,468 tubos de vacío, 70,000 resistencias y un consumo de 150 kW, ENIAC realizaba 5,000 sumas por segundo. Los tubos de vacío aprovechaban la emisión termoiónica: electrones liberados por efecto fotoléctrico al calentar un filamento metálico (física cuántica aplicada).</div>
+        <div class="physics-tag"><span class="icon">💡</span> Emisión termoiónica — efecto Edison — mecánica cuántica</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="event left electronica">
+      <div class="event-content">
+        <div class="event-year">1947</div>
+        <div class="event-title">Transistor — Bell Labs (Bardeen, Brattain, Shockley)</div>
+        <div class="event-desc">El transistor de punto de contacto de germanio reemplazó los tubos de vacío. Su funcionamiento se basa en semiconductores: materiales cuya conductividad se controla mediante dopaje (impurezas de boro o fósforo), explotando la banda de conducción cuántica y el efecto túnel en la unión p-n.</div>
+        <div class="physics-tag"><span class="icon">⚛️</span> Física del estado sólido — bandas de energía cuánticas</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-empty"></div>
+    </div>
+
+    <div class="event right electronica">
+      <div class="event-empty"></div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-content">
+        <div class="event-year">1948</div>
+        <div class="event-title">Teoría de la Información — Claude Shannon</div>
+        <div class="event-desc">Shannon definió el "bit" como unidad fundamental de información y estableció la entropía informacional: H = −Σ p log₂(p). Demostró que la información es una magnitud física, análoga a la entropía termodinámica de Boltzmann, vinculando computación y física fundamental.</div>
+        <div class="physics-tag"><span class="icon">📡</span> Termodinámica de la información — entropía de Shannon</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="event left electronica">
+      <div class="event-content">
+        <div class="event-year">1958</div>
+        <div class="event-title">Circuito Integrado — Jack Kilby (TI) & Robert Noyce (Fairchild)</div>
+        <div class="event-desc">Kilby integró transistores, resistencias y capacitores en un chip de germanio de 1.6 cm. Noyce perfeccionó el proceso con silicio y metalización por aluminio. El silicio fue elegido por su banda prohibida de 1.12 eV, ideal para operar entre 0 °C y 150 °C.</div>
+        <div class="physics-tag"><span class="icon">🔬</span> Banda prohibida del Si = 1.12 eV — física de semiconductores</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-empty"></div>
+    </div>
+
+    <!-- ─── ERA DIGITAL ─── -->
+    <div class="era-divider digital"><div class="era-divider-inner">Era Digital · 1970 – 1984</div></div>
+
+    <div class="event right digital">
+      <div class="event-empty"></div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-content">
+        <div class="event-year">1965 – 1975</div>
+        <div class="event-title">Ley de Moore — Gordon Moore</div>
+        <div class="event-desc">Moore observó que el número de transistores en un chip se duplica cada ~18 meses. Esta ley empírica fue posible gracias a la litografía ultravioleta, reduciéndose el nodo de 10 µm (1971) a 2 nm (2023). El límite físico es el efecto túnel cuántico a ~5 átomos de distancia.</div>
+        <div class="physics-tag"><span class="icon">📉</span> Litografía UV/EUV — límite cuántico ~1 nm</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="event left digital">
+      <div class="event-content">
+        <div class="event-year">1971</div>
+        <div class="event-title">Intel 4004 — Primer microprocesador comercial</div>
+        <div class="event-desc">El Intel 4004 integraba 2,300 transistores en un chip de 10 µm procesando 4 bits. Fue diseñado originalmente para calculadoras Busicom y operaba a 740 kHz. Marcó el inicio de la era de la informática personal y el procesamiento en un solo chip (SoC).</div>
+        <div class="physics-tag"><span class="icon">🔧</span> Proceso PMOS 10 µm — 2,300 transistores — 0.6 MHz</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-empty"></div>
+    </div>
+
+    <!-- ─── ERA PERSONAL ─── -->
+    <div class="era-divider personal"><div class="era-divider-inner">Era Personal · 1977 – 1994</div></div>
+
+    <div class="event right personal">
+      <div class="event-empty"></div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-content">
+        <div class="event-year">1977 – 1984</div>
+        <div class="event-title">Apple II & IBM PC — La computadora personal</div>
+        <div class="event-desc">El Apple II de Wozniak y el IBM PC de 1981 popularizaron la computación doméstica. El procesador 8088 de Intel ejecutaba instrucciones a 4.77 MHz con arquitectura de 16 bits, consumiendo apenas 1.6 watts, frente a los 150 kW del ENIAC, una reducción de 100,000 veces en consumo energético.</div>
+        <div class="physics-tag"><span class="icon">💻</span> Reducción energética: 150 kW → 1.6 W en 36 años</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="event left personal">
+      <div class="event-content">
+        <div class="event-year">1989</div>
+        <div class="event-title">World Wide Web — Tim Berners-Lee (CERN)</div>
+        <div class="event-desc">Nacido en el CERN para compartir datos entre físicos de partículas, el WWW usó el protocolo HTTP sobre TCP/IP para enlazar documentos hipertextuales. La ironía física: la mayor red de información de la humanidad fue creada para compartir datos del colisionador de hadrones.</div>
+        <div class="physics-tag"><span class="icon">🌐</span> Origen en física de partículas — CERN — protocolo HTTP</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-empty"></div>
+    </div>
+
+    <!-- ─── ERA INTERNET ─── -->
+    <div class="era-divider internet"><div class="era-divider-inner">Era Internet · 1994 – 2010</div></div>
+
+    <div class="event right internet">
+      <div class="event-empty"></div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-content">
+        <div class="event-year">1998 – 2007</div>
+        <div class="event-title">Google & el iPhone — Búsqueda y movilidad</div>
+        <div class="event-desc">PageRank de Google convirtió la web en conocimiento estructurado. El iPhone (2007) integró GPS (relatividad especial y general corregida a 7 µs/día en satélites), acelerómetros MEMS, pantalla capacitiva y radio de 2.4 GHz en un dispositivo de bolsillo, redefiniendo la interacción humano-computadora.</div>
+        <div class="physics-tag"><span class="icon">📱</span> GPS usa corrección relativista — MEMS — capacitancia táctil</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="event left internet">
+      <div class="event-content">
+        <div class="event-year">2006</div>
+        <div class="event-title">GPU Computing & CUDA — Nvidia</div>
+        <div class="event-desc">La GPU GeForce 8800 con CUDA permitió usar miles de núcleos paralelos para computación general. Las GPU explotan el paralelismo masivo de datos: mientras una CPU tiene ~24 núcleos, una GPU A100 tiene 6,912 núcleos CUDA operando simultáneamente, acelerando la física de simulaciones y el aprendizaje profundo.</div>
+        <div class="physics-tag"><span class="icon">🎮</span> Paralelismo masivo — 6,912 núcleos CUDA — arquitectura SIMD</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-empty"></div>
+    </div>
+
+    <!-- ─── ERA IA ─── -->
+    <div class="era-divider ia"><div class="era-divider-inner">Era de la IA · 2010 – presente</div></div>
+
+    <div class="event right ia">
+      <div class="event-empty"></div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-content">
+        <div class="event-year">2012</div>
+        <div class="event-title">AlexNet — El Big Bang del Deep Learning</div>
+        <div class="event-desc">AlexNet ganó ImageNet con 26% de error frente al 47% del runner-up, usando 60M de parámetros entrenados en dos GPU GTX 580. La red neuronal profunda funciona como un sistema físico de minimización de energía: el descenso de gradiente encuentra mínimos en un espacio de alta dimensión, análogo a la mecánica estadística.</div>
+        <div class="physics-tag"><span class="icon">🧠</span> Minimización energética — descenso de gradiente estocástico</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="event left ia">
+      <div class="event-content">
+        <div class="event-year">2019 – 2023</div>
+        <div class="event-title">Transformers & ChatGPT — GPT-4</div>
+        <div class="event-desc">La arquitectura Transformer (Vaswani et al., 2017) con atención multi-cabeza revolucionó el procesamiento del lenguaje. GPT-4 contiene ~1.76 billones de parámetros entrenados en ~25,000 GPU A100 durante semanas. El entrenamiento consumió energía equivalente a 500 hogares durante 1 año, planteando el debate energético-computacional.</div>
+        <div class="physics-tag"><span class="icon">🤖</span> ~10²³ FLOPS — consumo energético de escala industrial</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-empty"></div>
+    </div>
+
+    <div class="event right ia">
+      <div class="event-empty"></div>
+      <div class="event-node"><div class="node-dot"></div><div class="node-line"></div></div>
+      <div class="event-content">
+        <div class="event-year">2019 – presente</div>
+        <div class="event-title">Computación Cuántica — IBM, Google, IonQ</div>
+        <div class="event-desc">Google logró "supremacía cuántica" con 53 qubits en 2019: completó en 200 segundos un cálculo que tomaría 10,000 años a una supercomputadora clásica. Los qubits explotan superposición cuántica y entrelazamiento (|ψ⟩ = α|0⟩ + β|1⟩), operando a 0.015 K — más frío que el espacio exterior.</div>
+        <div class="physics-tag"><span class="icon">🔮</span> Superposición — entrelazamiento cuántico — 0.015 K operación</div>
+        <div class="impact-bar">
+          <span class="impact-label">Impacto</span>
+          <div class="impact-dots">
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div><div class="impact-dot active"></div>
+            <div class="impact-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <!-- ══ GRÁFICA LEY DE MOORE ══ -->
+  <div class="moore-section">
+    <div class="moore-chart">
+      <svg class="moore" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="mooreGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stop-color="#ffbe0b"/>
+            <stop offset="25%"  stop-color="#fb5607"/>
+            <stop offset="50%"  stop-color="#3a86ff"/>
+            <stop offset="75%"  stop-color="#06d6a0"/>
+            <stop offset="100%" stop-color="#ff006e"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Ejes -->
+        <line x1="70" y1="20" x2="70" y2="220" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        <line x1="70" y1="220" x2="880" y2="220" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+
+        <!-- Etiquetas Y (log scale) -->
+        <text x="62" y="225" fill="#8fb0d0" font-family="monospace" font-size="11" text-anchor="end">1</text>
+        <text x="62" y="188" fill="#8fb0d0" font-family="monospace" font-size="11" text-anchor="end">10³</text>
+        <text x="62" y="151" fill="#8fb0d0" font-family="monospace" font-size="11" text-anchor="end">10⁶</text>
+        <text x="62" y="114" fill="#8fb0d0" font-family="monospace" font-size="11" text-anchor="end">10⁹</text>
+        <text x="62" y="77"  fill="#8fb0d0" font-family="monospace" font-size="11" text-anchor="end">10¹²</text>
+        <text x="62" y="40"  fill="#8fb0d0" font-family="monospace" font-size="11" text-anchor="end">10¹⁵</text>
+
+        <!-- Líneas guía -->
+        <line x1="70" y1="188" x2="880" y2="188" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="70" y1="151" x2="880" y2="151" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="70" y1="114" x2="880" y2="114" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="70" y1="77"  x2="880" y2="77"  stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="70" y1="40"  x2="880" y2="40"  stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="4,4"/>
+
+        <!-- Curva Moore (línea continua) -->
+        <!-- Puntos reales (año→x, transistores→log y mapeado) -->
+        <!-- x: 70 (1971) → 880 (2023), rango 52 años → 810px, 15.57px/año -->
+        <!-- y: escala log(1)=0→220, log(10^15)=15→20, paso 13.33px/década-log -->
+        <!-- y = 220 - (log10(n)/15)*200 -->
+
+        <polyline
+          fill="none"
+          stroke="url(#mooreGrad)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          filter="url(#glow)"
+          points="
+            70,220
+            88,213
+            134,205
+            181,196
+            212,188
+            259,178
+            306,168
+            353,158
+            385,148
+            432,138
+            478,125
+            525,113
+            572,100
+            618,88
+            665,76
+            712,64
+            743,52
+            790,40
+            836,32
+            880,26
+          "
+        />
+
+        <!-- Puntos destacados -->
+        <circle cx="70"  cy="220" r="4" fill="#ffbe0b" filter="url(#glow)"/>
+        <circle cx="212" cy="188" r="4" fill="#fb5607" filter="url(#glow)"/>
+        <circle cx="385" cy="148" r="4" fill="#3a86ff" filter="url(#glow)"/>
+        <circle cx="572" cy="100" r="4" fill="#06d6a0" filter="url(#glow)"/>
+        <circle cx="743" cy="52"  r="4" fill="#8338ec" filter="url(#glow)"/>
+        <circle cx="880" cy="26"  r="4" fill="#ff006e" filter="url(#glow)"/>
+
+        <!-- Etiquetas chips -->
+        <text x="70"  y="210" fill="#ffbe0b" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">4004</text>
+        <text x="212" y="178" fill="#fb5607" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">8086</text>
+        <text x="385" y="138" fill="#3a86ff" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">Pentium</text>
+        <text x="572" y="90"  fill="#06d6a0" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">Core 2</text>
+        <text x="743" y="42"  fill="#8338ec" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">Ryzen</text>
+        <text x="880" y="18"  fill="#ff006e" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">M3</text>
+
+        <!-- Años eje X -->
+        <text x="70"  y="236" fill="#8fb0d0" font-family="monospace" font-size="10" text-anchor="middle">1971</text>
+        <text x="212" y="236" fill="#8fb0d0" font-family="monospace" font-size="10" text-anchor="middle">1982</text>
+        <text x="385" y="236" fill="#8fb0d0" font-family="monospace" font-size="10" text-anchor="middle">1993</text>
+        <text x="572" y="236" fill="#8fb0d0" font-family="monospace" font-size="10" text-anchor="middle">2006</text>
+        <text x="743" y="236" fill="#8fb0d0" font-family="monospace" font-size="10" text-anchor="middle">2017</text>
+        <text x="880" y="236" fill="#8fb0d0" font-family="monospace" font-size="10" text-anchor="middle">2023</text>
+
+        <!-- Etiqueta eje Y -->
+        <text x="15" y="130" fill="#7ab0e0" font-family="monospace" font-size="10" text-anchor="middle" transform="rotate(-90,15,130)">Transistores (escala log)</text>
+
+        <!-- Anotación límite cuántico -->
+        <line x1="860" y1="20" x2="860" y2="240" stroke="rgba(255,0,110,0.35)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="856" y="248" fill="#ff006e" font-family="monospace" font-size="9" text-anchor="end">límite cuántico</text>
+      </svg>
+    </div>
+    <p style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--text-secondary);text-align:center;margin-top:0.75rem;letter-spacing:0.08em;">
+      Duplicación cada ~18 meses · de 2,300 (1971) a ~50,000,000,000 transistores (2023) · límite físico: efecto túnel ~3 nm
+    </p>
+  </div>
+
+  <!-- ══ PANEL FÍSICA ══ -->
+  <div class="physics-panel">
+
+    <div class="physics-card">
+      <div class="physics-card-icon">⚛️</div>
+      <div class="physics-card-title">Mecánica Cuántica</div>
+      <div class="physics-card-desc">El transistor MOSFET moderno opera con canales de electrones que siguen la ecuación de Schrödinger. A 2 nm, los electrones atraviesan la barrera por efecto túnel, estableciendo el límite físico absoluto de la miniaturización.</div>
+      <div class="physics-card-formula">ψ(x,t): ĤΨ = iℏ ∂Ψ/∂t</div>
+    </div>
+
+    <div class="physics-card">
+      <div class="physics-card-icon">🌡️</div>
+      <div class="physics-card-title">Termodinámica</div>
+      <div class="physics-card-desc">El principio de Landauer establece que borrar 1 bit libera al menos kT·ln(2) de energía ≈ 2.8×10⁻²¹ J a temperatura ambiente. Los chips modernos disipan teravatios globalmente — la computación tiene un costo termodinámico inevitable.</div>
+      <div class="physics-card-formula">E_min = k_B · T · ln(2)</div>
+    </div>
+
+    <div class="physics-card">
+      <div class="physics-card-icon">💡</div>
+      <div class="physics-card-title">Fotónica & Litografía</div>
+      <div class="physics-card-desc">La litografía EUV (Luz ultravioleta extrema, λ=13.5 nm) de ASML usa plasma de estaño a 500,000 km/h excitado con láser CO₂. Esta técnica explota la óptica de onda para grabar circuitos más pequeños que la longitud de onda visible.</div>
+      <div class="physics-card-formula">λ_EUV = 13.5 nm · NA &gt; 0.33</div>
+    </div>
+
+    <div class="physics-card">
+      <div class="physics-card-icon">🔮</div>
+      <div class="physics-card-title">Computación Cuántica</div>
+      <div class="physics-card-desc">Un qubit es un sistema cuántico de dos niveles: electrón de espín, fotón de polarización o circuito superconductor Josephson. Opera a 15 mK (-273.135 °C), más frío que el fondo cósmico de microondas (2.7 K), para mantener coherencia cuántica.</div>
+      <div class="physics-card-formula">|q⟩ = α|0⟩ + β|1⟩ · |α|²+|β|²=1</div>
+    </div>
+
+    <div class="physics-card">
+      <div class="physics-card-icon">📡</div>
+      <div class="physics-card-title">Electromagnetismo</div>
+      <div class="physics-card-desc">Shannon demostró que la capacidad de canal C = B·log₂(1+S/N), donde B es el ancho de banda. Las ondas de radio, microondas y fibra óptica (luz infrarroja a 1,550 nm) son el sustrato físico de toda la comunicación digital.</div>
+      <div class="physics-card-formula">C = B · log₂(1 + S/N)</div>
+    </div>
+
+    <div class="physics-card">
+      <div class="physics-card-icon">🧮</div>
+      <div class="physics-card-title">Entropía de la Información</div>
+      <div class="physics-card-desc">La entropía de Shannon H = -Σp·log₂(p) es análoga a la entropía de Boltzmann S = k·ln(Ω). Maxwell, Szilard y Landauer demostraron que la información y la física son inseparables: medir es alterar el sistema, y olvidar tiene un costo energético real.</div>
+      <div class="physics-card-formula">H = -Σ p(x) · log₂[p(x)]</div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Historia de la Computación — Línea de Tiempo de Hitos Universales</p>
+    <p>Diseño editorial · Teoría del Color basada en el espectro electromagnético</p>
+    <p>Los principios físicos que subyacen al universo digital · De Babbage al Qubit</p>
+  </footer>
+
+</div><!-- /universe -->
+
+<script>
+// ─── Starfield ───
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function initStars() {
+  stars = [];
+  const N = Math.floor(window.innerWidth * window.innerHeight / 4000);
+  for (let i = 0; i < N; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2,
+      a: Math.random(),
+      da: (Math.random() - 0.5) * 0.003,
+      speed: Math.random() * 0.15
+    });
+  }
+}
+
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach(s => {
+    s.a += s.da;
+    if (s.a < 0.1 || s.a > 0.9) s.da *= -1;
+    s.y += s.speed;
+    if (s.y > canvas.height) s.y = 0;
+
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(140,180,255,${s.a * 0.6})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+
+window.addEventListener('resize', () => { resize(); initStars(); });
+resize();
+initStars();
+drawStars();
+
+// ─── Scroll reveal ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.event').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
